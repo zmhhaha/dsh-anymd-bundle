@@ -1,0 +1,26 @@
+# DSH 组合包：anymd MCP
+#
+# 本包唯一的作用是提供这一条插入行。DSH 的插件管理器只管理"组合包"
+# （package.json 里声明 dsh.bundle.patch 的包），普通包在安装前就被拒绝，
+# 所以 anymd 需要这个壳来承载配置行。
+#
+# anymd 本身不是 DSH 插件，它是个 CLI + stdio MCP server，因此：
+#   - 用 npx 自举，不必把它烘进镜像（首次 spawn 时由 npx 下载到 HOME 缓存）；
+#   - stdio 服务由 DSH 进程直接 spawn，跑在 **dsh 容器**里，看到的是那个容器的
+#     文件系统，不是项目卷 /workspace。要读的 PDF 必须在 dsh 容器能看到的路径下。
+#
+# 参考：@deepseek-ai/dsh-mcp-client 的 stdio schema
+#   transport: "stdio" · serverName(required) · command(required) · args[] · env{} · cwd
+- insert:
+    - id: anymd-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: anymd
+        transport: stdio
+        command: npx
+        args:
+          - '-y'
+          - '@sylphx/anymd'
+          - mcp
+          - '--allow-dir=/opt/data'
+        failOnStartupError: false

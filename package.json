@@ -1,0 +1,12 @@
+{
+  "name": "dsh-anymd-bundle",
+  "version": "1.0.0",
+  "description": "DSH 组合包：把 @sylphx/anymd（Any file → Markdown，含 PDF）作为 MCP 服务器挂进 profile",
+  "type": "module",
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./dsh/cordis.patch.yml"
+    }
+  }
+}
